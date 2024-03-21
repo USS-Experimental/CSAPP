@@ -166,7 +166,9 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return 2;
+  int is_tmax = !(~(x ^ (x + 1)));
+  int is_not_minus1 = !!((x + 1) | 0);
+  return is_tmax && is_not_minus1;
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
