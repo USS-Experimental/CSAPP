@@ -1,0 +1,5 @@
+# Ignore code folder
+/code
+
+# Temp files
+temp.*
