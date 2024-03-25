@@ -202,7 +202,9 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  return 2;
+  int greater_than_0x30 = !(((x + (~0x30 + 1)) >> 7) | 0);
+  int smaller_than_0x39 = !(((0x39 + (~x + 1)) >> 7) | 0);
+  return greater_than_0x30 & smaller_than_0x39;
 }
 /* 
  * conditional - same as x ? y : z 
