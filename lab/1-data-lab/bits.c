@@ -224,7 +224,7 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+  return !(((y + (~x + 1)) >> 31) | 0);
 }
 //4
 /* 
