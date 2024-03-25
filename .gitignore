@@ -1,3 +1,7 @@
+# Executable files
+*.out
+/lab/1-data-lab/btest
+
 # Ignore code folder
 /code
 
