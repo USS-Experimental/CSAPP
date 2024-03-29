@@ -264,7 +264,34 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  unsigned sign_mask = 1;
+  unsigned expo_mask = 0xFF;
+  unsigned frac_mask = 0xFF + (0xFF << 8) + (0x7F << 16);
+  unsigned sign = (uf >> 31) & sign_mask;
+  unsigned expo = (uf >> 23) & expo_mask;
+  unsigned frac = uf & frac_mask;
+  if (expo == 0xFF)
+  {
+    return uf;
+  }
+  else if (expo == 0)
+  {
+    frac <<= 1;
+    if ((frac >> 23) & frac_mask)
+    {
+      expo += 1;
+      frac &= frac_mask;
+    }
+  }
+  else
+  {
+    expo += 1;
+    if (expo == 0)
+    {
+      return uf;
+    }
+  }
+  return (sign << 31) | (expo << 23) | frac;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
