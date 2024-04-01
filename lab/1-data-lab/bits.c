@@ -353,5 +353,18 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+  unsigned INF = 0xFF << 23; // +INF: 0x7F800000
+  int bias = 0x7F;
+  if (x + bias <= 0) // expo smaller than 0, denormalized number
+  {
+    return 0;
+  }
+  else if (x + bias > 0 && x + bias < 0xFF) // 
+  {
+    return (x + bias) << 23;
+  }
+  else
+  {
+    return INF;
+  }
 }
