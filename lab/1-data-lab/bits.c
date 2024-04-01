@@ -266,7 +266,7 @@ int howManyBits(int x) {
 unsigned floatScale2(unsigned uf) {
   unsigned sign_mask = 1;
   unsigned expo_mask = 0xFF;
-  unsigned frac_mask = 0xFF + (0xFF << 8) + (0x7F << 16);
+  unsigned frac_mask = 0xFF | (0xFF << 8) | (0x7F << 16);
   unsigned sign = (uf >> 31) & sign_mask;
   unsigned expo = (uf >> 23) & expo_mask;
   unsigned frac = uf & frac_mask;
@@ -306,7 +306,38 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  unsigned OoR = 0x80 << 24; // Out of range: 0x80000000u
+  int bias = 127; // Bias for 32bit float point number
+  unsigned sign_mask = 0x01; // Mask for sign part
+  unsigned expo_mask = 0xFF; // Mask for expo part
+  unsigned frac_mask = 0xFF | (0xFF << 8) | (0x7F << 16); // Mask for frac part
+
+  // sign part 0x00 or 0x01
+  unsigned sign = (uf >> 31) & sign_mask;
+  // expo part range from 0x00 to 0xFF
+  int expo = ((uf >> 23) & expo_mask) - bias;
+  // get frac and add 1 to 24th bit, frac range from 0x000000 to 0x7FFFFF
+  unsigned frac = (uf & frac_mask) | (0x80 << 16);
+
+  if (expo < 0) // if denormalize must smaller than 1, return 0
+  {
+    return 0;
+  }
+  else if (expo > 31) // expo greater than 31 will overflow, 0x9F + 0x7FFFFF
+  {
+    return OoR;
+  }
+  else // no overflow and not smaller than 1
+  {
+    if (sign == 0) // positive number
+    {
+      return ((frac << 7) >> (30 - expo));
+    }
+    else // return negative number if sign is 1
+    {
+      return (~((frac << 7) >> (30 - expo)) + 1);
+    }
+  }
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
