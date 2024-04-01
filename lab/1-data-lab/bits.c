@@ -333,9 +333,9 @@ int floatFloat2Int(unsigned uf) {
     {
       return ((frac << 7) >> (30 - expo));
     }
-    else // return negative number if sign is 1
+    else // return negative number if sign is 1, we can use minus now
     {
-      return (~((frac << 7) >> (30 - expo)) + 1);
+      return -((frac << 7) >> (30 - expo));
     }
   }
 }
