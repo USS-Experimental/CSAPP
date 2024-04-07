@@ -249,7 +249,21 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+  int sign, bit_16, bit_8, bit_4, bit_2, bit_1, bit_0;
+  sign = x >> 31;
+  x = (sign & ~x) | (~sign & x);
+  bit_16 = !!(x >> 16) << 4;
+  x >>= bit_16;
+  bit_8 = !!(x >> 8) << 3;
+  x >>= bit_8;
+  bit_4 = !!(x >> 4) << 2;
+  x >>= bit_4;
+  bit_2 = !!(x >> 2) << 1;
+  x >>= bit_2;
+  bit_1 = !!(x >> 1) << 0;
+  x >>= bit_1;
+  bit_0 = x;
+  return bit_16 + bit_8 + bit_4 + bit_2 + bit_1 + bit_0 + 1;
 }
 //float
 /* 
@@ -359,11 +373,11 @@ unsigned floatPower2(int x) {
   {
     return 0;
   }
-  else if (x + bias > 0 && x + bias < 0xFF) // 
+  else if (x + bias > 0 && x + bias < 0xFF) // x + bias between 0 and 0xFF, no overflow
   {
     return (x + bias) << 23;
   }
-  else
+  else // expo greater than 0xFF, infinity number
   {
     return INF;
   }
